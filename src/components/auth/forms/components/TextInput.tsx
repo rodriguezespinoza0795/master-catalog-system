@@ -26,7 +26,7 @@ const TextInput = <T extends FieldValues>({
 }: TextInputProps<T>) => {
   return (
     <div className="grid gap-2">
-      <Label htmlFor="name">{label}</Label>
+      <Label htmlFor={name}>{label}</Label>
       <Controller
         name={name as Path<T>}
         control={control}

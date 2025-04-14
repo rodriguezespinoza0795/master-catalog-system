@@ -1,6 +1,6 @@
 import { renderHook, act } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useLoginForm } from "../LoginForm/useLoginForm";
+import { useLoginForm } from "../../LoginForm/useLoginForm";
 import axios from "axios";
 import { toast } from "sonner";
 

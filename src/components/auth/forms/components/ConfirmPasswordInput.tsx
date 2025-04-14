@@ -1,39 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 import { Controller } from "react-hook-form";
 import type { Control, FieldValues, Path } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { Eye, EyeOff } from "lucide-react";
-interface PasswordInputProps<T extends FieldValues> {
+
+interface ConfirmPasswordInputProps<T extends FieldValues> {
   control: Control<T>;
   errors: string;
-  passwordStrength?: number;
 }
 
-const PasswordInput = <T extends FieldValues>({
+const ConfirmPasswordInput = <T extends FieldValues>({
   control,
   errors,
-  passwordStrength,
-}: PasswordInputProps<T>) => {
+}: ConfirmPasswordInputProps<T>) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="grid gap-2">
-      <Label htmlFor="password">Password</Label>
+      <Label htmlFor="confirm-password">Confirm password</Label>
       <Controller
-        name={"password" as Path<T>}
+        name={"confirmPassword" as Path<T>}
         control={control}
         rules={{
           required: {
             value: true,
-            message: "Password is required",
+            message: "Confirm password is required",
           },
           validate: {
-            required: () => {
-              if (passwordStrength && passwordStrength < 5) {
-                return "Password is too weak";
+            match: (value) => {
+              const password = control._formValues.password;
+              if (value !== password) {
+                return "Passwords do not match";
               }
             },
           },
@@ -41,7 +41,7 @@ const PasswordInput = <T extends FieldValues>({
         render={({ field }) => (
           <div className="relative">
             <Input
-              id="password"
+              id="confirm-password"
               type={showPassword ? "text" : "password"}
               autoComplete="new-password"
               className={`${
@@ -76,4 +76,4 @@ const PasswordInput = <T extends FieldValues>({
   );
 };
 
-export default PasswordInput;
+export default ConfirmPasswordInput;

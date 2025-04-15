@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { LoginForm } from "@/components/auth/forms/LoginForm/loginForm";
+import { LoginForm } from "@/components/auth/forms/LoginForm/LoginForm";
 import Link from "next/link";
 
 const LoginPage = () => {

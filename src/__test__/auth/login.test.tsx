@@ -40,6 +40,16 @@ describe("Render Login Form", () => {
     expect(screen.getByText("Sign up")).toBeInTheDocument();
   });
 
+  it("Should show password when click on show confirm password button", () => {
+    render(<LoginPage />, { wrapper });
+
+    const passwordInput = screen.getByLabelText("Password") as HTMLInputElement;
+    expect(passwordInput.type).toBe("password");
+    const showPasswordButton = screen.getByTestId("icon-eye");
+    fireEvent.click(showPasswordButton);
+    expect(passwordInput.type).toBe("text");
+  });
+
   it("should show error message when fields are empty", async () => {
     render(<LoginPage />, { wrapper });
     const loginButton = screen.getByText("Login");

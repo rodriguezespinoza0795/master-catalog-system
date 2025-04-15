@@ -3,7 +3,6 @@ import RegisterPage from "@/app/auth/register/page";
 import axios from "axios";
 import { toast } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import LoginPage from "@/app/auth/login/page";
 
 // Mocks
 jest.mock("axios");

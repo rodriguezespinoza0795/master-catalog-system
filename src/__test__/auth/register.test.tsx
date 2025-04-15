@@ -40,6 +40,19 @@ describe("Render Register Form", () => {
     expect(screen.getByText("Already have an account?")).toBeInTheDocument();
     expect(screen.getByText("Login")).toBeInTheDocument();
   });
+
+  it("Should show password when click on show confirm password button", () => {
+    render(<RegisterPage />, { wrapper });
+
+    const confirmPasswordInput = screen.getByLabelText(
+      "Confirm password"
+    ) as HTMLInputElement;
+    expect(confirmPasswordInput.type).toBe("password");
+    const showPasswordButton = screen.getAllByTestId("icon-eye");
+    fireEvent.click(showPasswordButton[1]);
+    expect(confirmPasswordInput.type).toBe("text");
+  });
+
   it("should show error message when fields are empty", async () => {
     render(<RegisterPage />, { wrapper });
     const registerButton = screen.getByText("Sign up");
@@ -53,6 +66,7 @@ describe("Render Register Form", () => {
       ).toBeInTheDocument();
     });
   });
+
   it("should show error message when fields format are invalid", async () => {
     render(<RegisterPage />, { wrapper });
 

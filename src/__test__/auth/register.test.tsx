@@ -22,8 +22,7 @@ jest.mock("next/navigation", () => ({
 }));
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
-const mockedToast = toast.error as jest.Mock;
-
+const mockedToast = toast as jest.Mocked<typeof toast>;
 describe("Render Register Form", () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const wrapper = ({ children }: any) => (
@@ -101,7 +100,7 @@ describe("Render Register Form", () => {
     const registerButton = screen.getByText("Sign up");
     fireEvent.click(registerButton);
     await waitFor(() => {
-      expect(mockedToast).toHaveBeenCalledWith(
+      expect(mockedToast.error).toHaveBeenCalledWith(
         "Account already exists",
         expect.any(Object)
       );

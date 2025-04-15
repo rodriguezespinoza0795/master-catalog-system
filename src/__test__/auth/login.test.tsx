@@ -21,7 +21,7 @@ jest.mock("next/navigation", () => ({
 }));
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
-const mockedToast = toast.error as jest.Mock;
+const mockedToast = toast as jest.Mocked<typeof toast>;
 
 describe("Render Login Form", () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,7 +83,7 @@ describe("Render Login Form", () => {
     fireEvent.click(loginButton);
 
     await waitFor(() => {
-      expect(mockedToast).toHaveBeenCalledWith(
+      expect(mockedToast.error).toHaveBeenCalledWith(
         "User not found",
         expect.any(Object)
       );
@@ -109,7 +109,7 @@ describe("Render Login Form", () => {
     fireEvent.click(loginButton);
 
     await waitFor(() => {
-      expect(mockedToast).toHaveBeenCalledWith(
+      expect(mockedToast.error).toHaveBeenCalledWith(
         "Account not verified",
         expect.any(Object)
       );
@@ -135,7 +135,7 @@ describe("Render Login Form", () => {
     fireEvent.click(loginButton);
 
     await waitFor(() => {
-      expect(mockedToast).toHaveBeenCalledWith(
+      expect(mockedToast.error).toHaveBeenCalledWith(
         "Incorrect credentials",
         expect.any(Object)
       );

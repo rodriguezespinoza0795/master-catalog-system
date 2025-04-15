@@ -1,10 +1,10 @@
 import { renderHook, act } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useLoginForm } from "../../LoginForm/useLoginForm";
+import { useVerifyEmail } from "../../VerifyEmailForm/useVerifyEmail";
 import axios from "axios";
 import { toast } from "sonner";
 
-// Mocks
+// // Mocks
 jest.mock("axios");
 jest.mock("sonner", () => ({
   toast: {
@@ -16,8 +16,13 @@ const mockedRouter = {
   replace: jest.fn(),
 };
 
+const mockedSearchParams = {
+  get: jest.fn(),
+};
+
 jest.mock("next/navigation", () => ({
   useRouter: () => mockedRouter,
+  useSearchParams: () => mockedSearchParams,
 }));
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -30,99 +35,72 @@ const createWrapper = () => {
   );
 };
 
-describe("useLoginForm", () => {
+describe("useVerifyEmailForm", () => {
   it("should call router.replace on success", async () => {
-    const tokens = { accessToken: "abc" };
     mockedAxios.post.mockResolvedValueOnce({
-      data: { AuthenticationResult: tokens },
+      data: "test",
     });
 
-    const { result } = renderHook(() => useLoginForm(), {
+    const { result } = renderHook(() => useVerifyEmail(), {
       wrapper: createWrapper(),
     });
 
     await act(async () => {
       await result.current.onSubmit({
         email: "test@test.com",
-        password: "123456",
+        confirmationCode: "123456",
       });
     });
 
-    expect(sessionStorage.getItem("tokens")).toBe(JSON.stringify(tokens));
-    expect(mockedRouter.replace).toHaveBeenCalledWith("/");
+    expect(mockedRouter.replace).toHaveBeenCalledWith("/auth/login");
   });
 
-  it("should show error toast if login fails", async () => {
+  it("should show error toast if code is wrong", async () => {
     mockedAxios.post.mockRejectedValueOnce({
       response: {
         data: {
-          name: "UserNotFoundException",
+          name: "CodeMismatchException",
         },
       },
     });
 
-    const { result } = renderHook(() => useLoginForm(), {
+    const { result } = renderHook(() => useVerifyEmail(), {
       wrapper: createWrapper(),
     });
 
     await act(async () => {
       await result.current.onSubmit({
         email: "fail@test.com",
-        password: "wrongpass",
+        confirmationCode: "123456",
       });
     });
 
     expect(mockedToast.error).toHaveBeenCalledWith(
-      "User not found",
+      "Invalid verification code",
       expect.objectContaining({})
     );
   });
 
-  it("should redirect to verify-email if user is not confirmed", async () => {
+  it("should show error toast if resend code fails", async () => {
     mockedAxios.post.mockRejectedValueOnce({
       response: {
         data: {
-          name: "UserNotConfirmedException",
+          name: "ResendCodeException",
         },
       },
     });
 
-    const { result } = renderHook(() => useLoginForm(), {
+    const { result } = renderHook(() => useVerifyEmail(), {
       wrapper: createWrapper(),
     });
 
     await act(async () => {
-      await result.current.onSubmit({
-        email: "unconfirmed@test.com",
-        password: "123456",
-      });
-    });
-
-    expect(mockedRouter.replace).toHaveBeenCalledWith(
-      "/auth/verify-email?email=unconfirmed@test.com"
-    );
-  });
-  it("should show generic error when an unknown error occurs", async () => {
-    mockedAxios.post.mockRejectedValueOnce({
-      response: {
-        data: {}, // sin .name
-      },
-    });
-
-    const { result } = renderHook(() => useLoginForm(), {
-      wrapper: createWrapper(),
-    });
-
-    await act(async () => {
-      await result.current.onSubmit({
-        email: "unknown@test.com",
-        password: "123456",
-      });
+      await result.current.handleResendCode();
     });
 
     expect(mockedToast.error).toHaveBeenCalledWith(
       "Something went wrong",
-      expect.any(Object)
+      expect.objectContaining({})
     );
   });
 });

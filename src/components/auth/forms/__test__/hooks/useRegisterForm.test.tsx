@@ -21,7 +21,7 @@ jest.mock("next/navigation", () => ({
 }));
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
-const mockedToast = toast.error as jest.Mock;
+const mockedToast = toast as jest.Mocked<typeof toast>;
 
 const createWrapper = () => {
   const queryClient = new QueryClient();
@@ -34,7 +34,7 @@ describe("useRegisterForm", () => {
   it("should call router.replace on success", async () => {
     const tokens = { accessToken: "abc" };
     mockedAxios.post.mockResolvedValueOnce({
-      data: { AuthenticationResult: tokens },
+      data: "test",
     });
     const { result } = renderHook(() => useRegisterForm(), {
       wrapper: createWrapper(),
@@ -70,7 +70,7 @@ describe("useRegisterForm", () => {
         confirmPassword: "@validPassword123",
       });
     });
-    expect(mockedToast).toHaveBeenCalledWith(
+    expect(mockedToast.error).toHaveBeenCalledWith(
       "Account already exists",
       expect.objectContaining({})
     );

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import LoginPage from "@/app/auth/login/page";
+import LoginPage from "@/app/(public)/auth/login/page";
 import axios from "axios";
 import { toast } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -169,7 +169,7 @@ describe("Render Login Form", () => {
     fireEvent.click(loginButton);
 
     await waitFor(() => {
-      expect(mockedRouter.replace).toHaveBeenCalledWith("/");
+      expect(mockedRouter.replace).toHaveBeenCalledWith("/home");
     });
   });
 });

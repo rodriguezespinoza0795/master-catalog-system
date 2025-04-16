@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import RegisterPage from "@/app/auth/register/page";
+import RegisterPage from "@/app/(public)/auth/register/page";
 import axios from "axios";
 import { toast } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

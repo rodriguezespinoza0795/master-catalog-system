@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import ForgotPasswordPage from "@/app/auth/forgot-password/page";
+import ForgotPasswordPage from "@/app/(public)/auth/forgot-password/page";
 import axios from "axios";
 import { toast } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

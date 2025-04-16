@@ -49,7 +49,7 @@ describe("useLoginForm", () => {
     });
 
     expect(sessionStorage.getItem("tokens")).toBe(JSON.stringify(tokens));
-    expect(mockedRouter.replace).toHaveBeenCalledWith("/");
+    expect(mockedRouter.replace).toHaveBeenCalledWith("/home");
   });
 
   it("should show error toast if login fails", async () => {

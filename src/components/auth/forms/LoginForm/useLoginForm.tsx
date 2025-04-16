@@ -33,7 +33,7 @@ export const useLoginForm = () => {
         "tokens",
         JSON.stringify(data.AuthenticationResult)
       );
-      router.replace("/");
+      router.replace("/home");
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any, variables) => {

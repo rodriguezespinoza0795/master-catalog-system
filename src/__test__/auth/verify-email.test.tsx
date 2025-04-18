@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import VerifyEmailPage from "@/app/auth/verify-email/page";
+import VerifyEmailPage from "@/app/(public)/auth/verify-email/page";
 import axios from "axios";
 import { toast } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

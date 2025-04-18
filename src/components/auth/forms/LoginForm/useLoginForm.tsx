@@ -7,6 +7,7 @@ import type { LoginInputs } from "@/components/auth/forms/LoginForm/Login.interf
 import getCognitoError from "@/utils/cognitoErrors";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
+import { createSession } from "@/lib/session";
 
 export const useLoginForm = () => {
   const router = useRouter();
@@ -28,12 +29,13 @@ export const useLoginForm = () => {
       );
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       sessionStorage.setItem(
         "tokens",
         JSON.stringify(data.AuthenticationResult)
       );
-      router.replace("/");
+      await createSession(data.AuthenticationResult.AccessToken);
+      router.replace("/home");
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any, variables) => {

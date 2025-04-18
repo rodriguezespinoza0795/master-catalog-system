@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import LoginPage from "@/app/auth/login/page";
+import LoginPage from "@/app/(public)/auth/login/page";
 import axios from "axios";
 import { toast } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -18,6 +18,10 @@ const mockedRouter = {
 
 jest.mock("next/navigation", () => ({
   useRouter: () => mockedRouter,
+}));
+
+jest.mock("@/lib/session", () => ({
+  createSession: jest.fn(),
 }));
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -154,7 +158,7 @@ describe("Render Login Form", () => {
   it("should redirect to home page when login is successful", async () => {
     mockedAxios.post.mockResolvedValueOnce({
       data: {
-        message: "Login successful",
+        AuthenticationResult: {},
       },
     });
 
@@ -169,7 +173,7 @@ describe("Render Login Form", () => {
     fireEvent.click(loginButton);
 
     await waitFor(() => {
-      expect(mockedRouter.replace).toHaveBeenCalledWith("/");
+      expect(mockedRouter.replace).toHaveBeenCalledWith("/home");
     });
   });
 });

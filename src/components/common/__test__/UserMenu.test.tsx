@@ -14,7 +14,7 @@ jest.mock("../Header/useHeader", () => ({
 }));
 
 describe("UserMenu", () => {
-  it("muestra el dropdown al hacer click en el avatar", async () => {
+  it("show dropdown when click on avatar", async () => {
     const user = userEvent.setup();
 
     const container = document.createElement("div");
@@ -25,15 +25,15 @@ describe("UserMenu", () => {
     const avatarButton = screen.getByRole("button");
     expect(avatarButton).toBeInTheDocument();
 
-    // El contenido no debería estar visible antes
+    // The content should not be visible before
     expect(
       screen.queryByTestId("dropdown-menu-content")
     ).not.toBeInTheDocument();
 
-    // Simula el click
+    // Simulate the click
     await user.click(avatarButton);
 
-    // Espera que aparezca el dropdown
+    // Wait for the dropdown to appear
     const dropdown = await screen.findByRole("menu");
 
     expect(dropdown).toBeVisible();

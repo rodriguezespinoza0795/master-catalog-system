@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { isTokenValid } from "@/utils/isTokenValid";
 
 // 1. Specify protected and public routes
-const protectedRoutes = ["/home"];
+const protectedRoutes = ["/home", "/profile", "/settings"];
 const publicRoutes = [
   "/",
   "/auth/login",

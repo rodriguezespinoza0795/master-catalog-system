@@ -20,6 +20,10 @@ jest.mock("next/navigation", () => ({
   useRouter: () => mockedRouter,
 }));
 
+jest.mock("@/lib/session", () => ({
+  createSession: jest.fn(),
+}));
+
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 const mockedToast = toast as jest.Mocked<typeof toast>;
 
@@ -154,7 +158,7 @@ describe("Render Login Form", () => {
   it("should redirect to home page when login is successful", async () => {
     mockedAxios.post.mockResolvedValueOnce({
       data: {
-        message: "Login successful",
+        AuthenticationResult: {},
       },
     });
 

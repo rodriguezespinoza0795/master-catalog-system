@@ -20,6 +20,10 @@ jest.mock("next/navigation", () => ({
   useRouter: () => mockedRouter,
 }));
 
+jest.mock("@/lib/session", () => ({
+  createSession: jest.fn(),
+}));
+
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 const mockedToast = toast as jest.Mocked<typeof toast>;
 
@@ -105,7 +109,7 @@ describe("useLoginForm", () => {
   it("should show generic error when an unknown error occurs", async () => {
     mockedAxios.post.mockRejectedValueOnce({
       response: {
-        data: {}, // sin .name
+        data: {},
       },
     });
 

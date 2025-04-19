@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/collapsible";
 import Link from "next/link";
 import { useSidebar } from "./useSidebar";
+import { useRouter } from "next/navigation";
 
 const SidebarComponent = () => {
   const {
@@ -27,6 +28,7 @@ const SidebarComponent = () => {
     openGroups,
     toggleGroup,
   } = useSidebar();
+  const router = useRouter();
 
   return (
     <Sidebar variant="sidebar">
@@ -84,9 +86,10 @@ const SidebarComponent = () => {
                             ? "bg-primary/10 text-primary"
                             : "text-muted-foreground hover:bg-muted"
                         }`}
-                        onClick={() =>
-                          handleModuleSelect(module.id, subcatalog.id)
-                        }
+                        onClick={() => {
+                          handleModuleSelect(module.id, subcatalog.id);
+                          router.push(`/home/${subcatalog.id}`);
+                        }}
                       >
                         <subcatalog.icon className="h-4 w-4" />
                         <span>{subcatalog.name}</span>

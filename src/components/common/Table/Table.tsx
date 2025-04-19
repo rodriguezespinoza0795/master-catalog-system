@@ -18,7 +18,7 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function TableComponent({
+export default async function TableComponent({
   headers,
   data,
   name,

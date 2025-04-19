@@ -1,9 +1,8 @@
-"use client";
-
 import { Table } from "@/components/common/Table";
 import PageHeader from "@/components/common/Table/PageHeader";
 import Pagination from "@/components/common/Table/Pagination";
 import Toolbar from "@/components/common/Table/Toolbar";
+import { fetchData } from "@/lib/data";
 import {
   BookOpen,
   Boxes,
@@ -16,7 +15,6 @@ import {
   Tag,
   UserCircle,
 } from "lucide-react";
-import { useParams } from "next/navigation";
 
 const getTableHeaders = (subcatalogId: string | null = null) => {
   // Headers for each module and subcatalog
@@ -77,298 +75,6 @@ const getTableHeaders = (subcatalogId: string | null = null) => {
   if (!subcatalogId) return [];
 
   return headers[subcatalogId as keyof typeof headers];
-};
-
-const getModuleData = (subcatalogId: string | null = null) => {
-  // Mock data for each module and subcatalog
-  const data: Record<string, any[]> = {
-    "products-list": [
-      {
-        id: 1,
-        name: "Wireless Headphones",
-        category: "Electronics",
-        status: "Active",
-        stock: 145,
-        price: "$89.99",
-      },
-      {
-        id: 2,
-        name: "Ergonomic Chair",
-        category: "Furniture",
-        status: "Active",
-        stock: 32,
-        price: "$249.99",
-      },
-      {
-        id: 3,
-        name: "Smart Watch",
-        category: "Electronics",
-        status: "Low Stock",
-        stock: 8,
-        price: "$199.99",
-      },
-      {
-        id: 4,
-        name: "Laptop Stand",
-        category: "Accessories",
-        status: "Active",
-        stock: 67,
-        price: "$34.99",
-      },
-      {
-        id: 5,
-        name: "Coffee Maker",
-        category: "Appliances",
-        status: "Discontinued",
-        stock: 0,
-        price: "$79.99",
-      },
-    ],
-    "product-sizes": [
-      {
-        id: 1,
-        name: "Small",
-        code: "S",
-        status: "Active",
-        description: "Small size",
-      },
-      {
-        id: 2,
-        name: "Medium",
-        code: "M",
-        status: "Active",
-        description: "Medium size",
-      },
-      {
-        id: 3,
-        name: "Large",
-        code: "L",
-        status: "Active",
-        description: "Large size",
-      },
-      {
-        id: 4,
-        name: "Extra Large",
-        code: "XL",
-        status: "Active",
-        description: "Extra large size",
-      },
-      {
-        id: 5,
-        name: "XXL",
-        code: "XXL",
-        status: "Active",
-        description: "Double extra large size",
-      },
-    ],
-    "product-categories": [
-      {
-        id: 1,
-        name: "Electronics",
-        status: "Active",
-        description: "Electronic devices and accessories",
-      },
-      {
-        id: 2,
-        name: "Furniture",
-        status: "Active",
-        description: "Home and office furniture",
-      },
-      {
-        id: 3,
-        name: "Accessories",
-        status: "Active",
-        description: "Various accessories for products",
-      },
-      {
-        id: 4,
-        name: "Appliances",
-        status: "Active",
-        description: "Home and kitchen appliances",
-      },
-      {
-        id: 5,
-        name: "Clothing",
-        status: "Active",
-        description: "Apparel and fashion items",
-      },
-    ],
-    "suppliers-list": [
-      {
-        id: 1,
-        name: "Global Electronics",
-        category: "Electronics",
-        status: "Active",
-        contact: "John Smith",
-        location: "New York, USA",
-      },
-      {
-        id: 2,
-        name: "Furniture Plus",
-        category: "Furniture",
-        status: "Active",
-        contact: "Sarah Johnson",
-        location: "Chicago, USA",
-      },
-    ],
-    "supplier-types": [
-      {
-        id: 1,
-        name: "Manufacturer",
-        status: "Active",
-        description: "Creates and produces products",
-      },
-      {
-        id: 2,
-        name: "Distributor",
-        status: "Active",
-        description: "Distributes products to retailers",
-      },
-      {
-        id: 3,
-        name: "Wholesaler",
-        status: "Active",
-        description: "Sells products in bulk",
-      },
-    ],
-    "customers-list": [
-      {
-        id: 1,
-        name: "Acme Corporation",
-        category: "Enterprise",
-        status: "Active",
-        contact: "John Doe",
-        location: "New York, USA",
-      },
-      {
-        id: 2,
-        name: "Globex Inc",
-        category: "Enterprise",
-        status: "Active",
-        contact: "Jane Smith",
-        location: "London, UK",
-      },
-    ],
-    "customer-segments": [
-      {
-        id: 1,
-        name: "Enterprise",
-        status: "Active",
-        description: "Large enterprise customers",
-      },
-      {
-        id: 2,
-        name: "SMB",
-        status: "Active",
-        description: "Small and medium businesses",
-      },
-      {
-        id: 3,
-        name: "Individual",
-        status: "Active",
-        description: "Individual consumers",
-      },
-    ],
-    "contact-methods": [
-      {
-        id: 1,
-        name: "Email",
-        status: "Active",
-        description: "Contact via email",
-      },
-      {
-        id: 2,
-        name: "Phone",
-        status: "Active",
-        description: "Contact via phone",
-      },
-      {
-        id: 3,
-        name: "Mail",
-        status: "Active",
-        description: "Contact via postal mail",
-      },
-    ],
-    "documents-list": [
-      {
-        id: 1,
-        name: "Invoice Template",
-        category: "Finance",
-        status: "Active",
-        version: "2.1",
-        lastUpdated: "2023-05-15",
-      },
-      {
-        id: 2,
-        name: "Employee Contract",
-        category: "HR",
-        status: "Active",
-        version: "1.3",
-        lastUpdated: "2023-06-22",
-      },
-    ],
-    "document-types": [
-      {
-        id: 1,
-        name: "Invoice",
-        status: "Active",
-        description: "Billing documents",
-      },
-      {
-        id: 2,
-        name: "Contract",
-        status: "Active",
-        description: "Legal agreements",
-      },
-      {
-        id: 3,
-        name: "Report",
-        status: "Active",
-        description: "Business reports",
-      },
-    ],
-    "organizations-list": [
-      {
-        id: 1,
-        name: "Marketing Department",
-        category: "Department",
-        status: "Active",
-        manager: "Sarah Johnson",
-        employees: 24,
-      },
-      {
-        id: 2,
-        name: "Engineering Team",
-        category: "Team",
-        status: "Active",
-        manager: "Michael Chen",
-        employees: 42,
-      },
-    ],
-    departments: [
-      {
-        id: 1,
-        name: "Marketing",
-        status: "Active",
-        description: "Marketing department",
-      },
-      {
-        id: 2,
-        name: "Engineering",
-        status: "Active",
-        description: "Engineering department",
-      },
-      {
-        id: 3,
-        name: "Finance",
-        status: "Active",
-        description: "Finance department",
-      },
-    ],
-  };
-
-  if (!subcatalogId) return [];
-  return data[subcatalogId as keyof typeof data];
 };
 
 interface CatalogModule {
@@ -444,22 +150,63 @@ const modules: CatalogModule[] = [
   },
 ];
 
-const HomePage = () => {
-  const params = useParams();
+const HomePage = async (props: {
+  params: Promise<{
+    table?: string;
+    module?: string;
+  }>;
+}) => {
+  const dbTableName = {
+    "products-list": "products",
+    "product-sizes": "product_sizes",
+    "product-categories": "product_categories",
+    "suppliers-list": "suppliers",
+    "supplier-types": "supplier_types",
+    "customers-list": "customers",
+    "customer-segments": "customer_segments",
+    "contact-methods": "contact_methods",
+    "documents-list": "documents",
+    "document-types": "document_types",
+    "organizations-list": "organizations",
+    departments: "departments",
+  };
+  const params = await props.params;
+  let dbData = null;
+  if (
+    [
+      "products-list",
+      "product-sizes",
+      "product-categories",
+      "suppliers-list",
+      "supplier-types",
+      "customers-list",
+      "customer-segments",
+      "contact-methods",
+      "documents-list",
+      "document-types",
+      "organizations-list",
+      "departments",
+    ].includes(params?.table as string)
+  ) {
+    dbData = await fetchData(
+      dbTableName[params?.table as keyof typeof dbTableName]
+    );
+  }
 
-  const data = getModuleData(params?.table as string);
   const headers = getTableHeaders(params?.table as string);
   const moduleInfo = modules.find((m) => m.id === (params?.module as string));
   const ModuleIcon = moduleInfo?.icon || moduleInfo?.icon || Database;
   const title = moduleInfo?.name || moduleInfo?.name || "Catalog";
+
+  const rows = dbData ? dbData : [];
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] bg-background">
       <main className="flex flex-col  overflow-auto px-4 md:px-6 h-full py-10 gap-10">
         <PageHeader title={title} icon={<ModuleIcon className="h-5 w-5" />} />
         <Toolbar title={title} name={params?.table as string} />
-        <Table headers={headers} data={data} name={params?.table as string} />
-        <Pagination totalItems={data.length} />
+        <Table headers={headers} data={rows} name={params?.table as string} />
+        <Pagination totalItems={rows.length} />
       </main>
     </div>
   );

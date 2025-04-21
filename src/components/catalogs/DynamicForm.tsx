@@ -7,28 +7,38 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Controller } from "react-hook-form";
-import { createNewRecord } from "@/lib/actions";
+import { createNewRecord, updateRecord } from "@/lib/actions";
 import { CatalogConfig } from "@/components/catalogs/catalog.utils";
 
 interface DynamicFormInputs {
   [key: string]: string;
 }
 
-const DynamicForm = ({ config }: { config: CatalogConfig }) => {
+const DynamicForm = ({
+  config,
+  defaultData,
+}: {
+  config: CatalogConfig;
+  defaultData?: any;
+}) => {
   const {
     handleSubmit,
     formState: { errors },
     control,
   } = useForm<DynamicFormInputs>({
     defaultValues: config.create.reduce((acc, field) => {
-      acc[field.name] = "";
+      acc[field.name] = defaultData?.[field.name] || "";
       return acc;
     }, {} as DynamicFormInputs),
   });
 
   const onSubmit: SubmitHandler<DynamicFormInputs> = async (data) => {
     try {
-      createNewRecord(data, config);
+      if (defaultData) {
+        updateRecord(defaultData.id, data, config);
+      } else {
+        createNewRecord(data, config);
+      }
     } catch (error) {
       console.error(error);
       toast.error("Error creating record");
@@ -36,7 +46,7 @@ const DynamicForm = ({ config }: { config: CatalogConfig }) => {
   };
 
   const pattern = {
-    text: /^[a-zA-ZÀ-ÿ\s]*$/,
+    text: /^[a-zA-ZÀ-ÿ\s,]*$/,
     number: /^[0-9]*$/,
     decimal: /^[0-9]*(\.[0-9]*)?$/,
   };
@@ -87,7 +97,7 @@ const DynamicForm = ({ config }: { config: CatalogConfig }) => {
                     </div>
                   ))}
                   <Button type="submit" className="w-full">
-                    Create
+                    {defaultData ? "Update" : "Create"}
                   </Button>
                 </form>
               </CardContent>

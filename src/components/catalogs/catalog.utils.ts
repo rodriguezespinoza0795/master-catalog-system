@@ -5,7 +5,7 @@ export interface CatalogConfig {
     label: string;
     type: string;
   }[];
-  dbname: string;
+  dbTableName: string;
   route: string;
 }
 
@@ -19,7 +19,7 @@ export const getCatalogConfig = (table: string): CatalogConfig => {
         { name: "stock", label: "Stock", type: "number" },
         { name: "price", label: "Price", type: "decimal" },
       ],
-      dbname: "products",
+      dbTableName: "products",
       route: "products-list",
     },
     "product-sizes": {
@@ -29,7 +29,7 @@ export const getCatalogConfig = (table: string): CatalogConfig => {
         { name: "code", label: "Code", type: "text" },
         { name: "description", label: "Description", type: "text" },
       ],
-      dbname: "product_sizes",
+      dbTableName: "product_sizes",
       route: "product-sizes",
     },
     "product-categories": {
@@ -38,7 +38,7 @@ export const getCatalogConfig = (table: string): CatalogConfig => {
         { name: "name", label: "Name", type: "text" },
         { name: "description", label: "Description", type: "text" },
       ],
-      dbname: "product_categories",
+      dbTableName: "product_categories",
       route: "product-categories",
     },
     "suppliers-list": {
@@ -49,7 +49,7 @@ export const getCatalogConfig = (table: string): CatalogConfig => {
         { name: "contact", label: "Contact", type: "text" },
         { name: "location", label: "Location", type: "text" },
       ],
-      dbname: "suppliers",
+      dbTableName: "suppliers",
       route: "suppliers-list",
     },
     "supplier-types": {
@@ -58,7 +58,7 @@ export const getCatalogConfig = (table: string): CatalogConfig => {
         { name: "name", label: "Name", type: "text" },
         { name: "description", label: "Description", type: "text" },
       ],
-      dbname: "supplier_types",
+      dbTableName: "supplier_types",
       route: "supplier-types",
     },
     "customers-list": {
@@ -69,7 +69,7 @@ export const getCatalogConfig = (table: string): CatalogConfig => {
         { name: "contact", label: "Contact", type: "text" },
         { name: "location", label: "Location", type: "text" },
       ],
-      dbname: "customers",
+      dbTableName: "customers",
       route: "customers-list",
     },
     "customer-segments": {
@@ -78,7 +78,7 @@ export const getCatalogConfig = (table: string): CatalogConfig => {
         { name: "name", label: "Name", type: "text" },
         { name: "description", label: "Description", type: "text" },
       ],
-      dbname: "customer_segments",
+      dbTableName: "customer_segments",
       route: "customer-segments",
     },
     "contact-methods": {
@@ -87,7 +87,7 @@ export const getCatalogConfig = (table: string): CatalogConfig => {
         { name: "name", label: "Name", type: "text" },
         { name: "description", label: "Description", type: "text" },
       ],
-      dbname: "contact_methods",
+      dbTableName: "contact_methods",
       route: "contact-methods",
     },
     "documents-list": {
@@ -97,7 +97,7 @@ export const getCatalogConfig = (table: string): CatalogConfig => {
         { name: "category", label: "Category", type: "text" },
         { name: "version", label: "Version", type: "decimal" },
       ],
-      dbname: "documents",
+      dbTableName: "documents",
       route: "documents-list",
     },
     "document-types": {
@@ -106,7 +106,7 @@ export const getCatalogConfig = (table: string): CatalogConfig => {
         { name: "name", label: "Name", type: "text" },
         { name: "description", label: "Description", type: "text" },
       ],
-      dbname: "document_types",
+      dbTableName: "document_types",
       route: "document-types",
     },
     "organizations-list": {
@@ -117,7 +117,7 @@ export const getCatalogConfig = (table: string): CatalogConfig => {
         { name: "manager", label: "Manager", type: "text" },
         { name: "employees", label: "Employees", type: "number" },
       ],
-      dbname: "organizations",
+      dbTableName: "organizations",
       route: "organizations-list",
     },
     departments: {
@@ -126,7 +126,7 @@ export const getCatalogConfig = (table: string): CatalogConfig => {
         { name: "name", label: "Name", type: "text" },
         { name: "description", label: "Description", type: "text" },
       ],
-      dbname: "departments",
+      dbTableName: "departments",
       route: "departments",
     },
   };

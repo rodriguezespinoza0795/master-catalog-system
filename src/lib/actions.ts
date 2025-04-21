@@ -70,8 +70,16 @@ export async function updateRecord(
   redirect(`/home/${config.route}`);
 }
 
-export async function deleteRecord(id: string) {
-  console.log("id", id);
-  // await sql`DELETE FROM invoices WHERE id = ${id}`;
-  // revalidatePath("/dashboard/invoices");
+export async function deleteRecord(id: string, config: CatalogConfig) {
+  try {
+    const query = `
+    UPDATE ${config.dbTableName}
+    SET status = 'Inactive'
+    WHERE id = ${id}
+  `;
+    await sql.unsafe(query);
+    revalidatePath(`/home/${config.route}`);
+  } catch (error) {
+    return { message: "Database Error: Failed to delete record." };
+  }
 }

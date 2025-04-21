@@ -24,7 +24,7 @@ export async function createNewRecord(
 
   try {
     const query = `
-      INSERT INTO ${config.dbname} (${fields}, status)
+      INSERT INTO ${config.dbTableName} (${fields}, status)
       VALUES (${values}, 'Active')
     `;
     await sql.unsafe(query);
@@ -40,25 +40,37 @@ export async function createNewRecord(
   redirect(`/home/${config.route}`);
 }
 
-export async function updateInvoice(id: string, data: Record<string, string>) {
-  console.log("id", id);
-  console.log("data", data);
+export async function updateRecord(
+  id: string,
+  data: Record<string, string>,
+  config: CatalogConfig
+) {
+  const values = Object.entries(data)
+    .map(([key, value]) => {
+      const type = config.create.find((field) => field.name === key)?.type;
+      if (type === "text") {
+        return `${key} = '${value}'`;
+      }
+      return `${key} = ${value}`;
+    })
+    .join(", ");
 
-  // try {
-  //   await sql`
-  //     UPDATE invoices
-  //     SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-  //     WHERE id = ${id}
-  //   `;
-  // } catch (error) {
-  //   return { message: "Database Error: Failed to Update Invoice." };
-  // }
+  try {
+    const query = `
+    UPDATE ${config.dbTableName}
+    SET ${values}
+    WHERE id = ${id}
+  `;
+    await sql.unsafe(query);
+  } catch (error) {
+    return { message: "Database Error: Failed to update record." };
+  }
 
-  // revalidatePath("/dashboard/invoices");
-  // redirect("/dashboard/invoices");
+  revalidatePath(`/home/${config.route}`);
+  redirect(`/home/${config.route}`);
 }
 
-export async function deleteInvoice(id: string) {
+export async function deleteRecord(id: string) {
   console.log("id", id);
   // await sql`DELETE FROM invoices WHERE id = ${id}`;
   // revalidatePath("/dashboard/invoices");

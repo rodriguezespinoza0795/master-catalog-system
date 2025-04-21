@@ -15,6 +15,7 @@ import {
   UserCircle,
   Users,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 // Define the catalog structure with subcatalogs
@@ -128,17 +129,25 @@ const modules: CatalogModule[] = [
     ],
   },
 ];
+
 export const useSidebar = () => {
-  const [selectedModule, setSelectedModule] = useState<string | null>(null);
+  const pathname = usePathname();
+  const subcatalog = pathname.split("/")[2];
+  const module = modules.find((m) =>
+    m.subcatalogs?.some((s) => s.id === subcatalog)
+  );
+  const [selectedModule, setSelectedModule] = useState<string | null>(
+    module?.id || null
+  );
   const [selectedSubcatalog, setSelectedSubcatalog] = useState<string | null>(
-    null
+    subcatalog
   );
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    products: false,
-    suppliers: false,
-    customers: false,
-    documents: false,
-    organizations: false,
+    products: module?.id === "products",
+    suppliers: module?.id === "suppliers",
+    customers: module?.id === "customers",
+    documents: module?.id === "documents",
+    organizations: module?.id === "organizations",
   });
 
   const toggleGroup = (groupId: string) => {

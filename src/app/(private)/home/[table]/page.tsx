@@ -3,18 +3,6 @@ import PageHeader from "@/components/common/Table/PageHeader";
 import Pagination from "@/components/common/Table/Pagination";
 import Toolbar from "@/components/common/Table/Toolbar";
 import { fetchData } from "@/lib/data";
-import {
-  BookOpen,
-  Boxes,
-  Building,
-  Building2,
-  Database,
-  FileSpreadsheet,
-  Phone,
-  Ruler,
-  Tag,
-  UserCircle,
-} from "lucide-react";
 
 const getTableHeaders = (subcatalogId: string | null = null) => {
   // Headers for each module and subcatalog
@@ -77,79 +65,6 @@ const getTableHeaders = (subcatalogId: string | null = null) => {
   return headers[subcatalogId as keyof typeof headers];
 };
 
-interface CatalogModule {
-  id: string;
-  name: string;
-  icon: React.ElementType;
-}
-
-const modules: CatalogModule[] = [
-  {
-    id: "products-list",
-    name: "Products",
-    icon: Boxes,
-  },
-  {
-    id: "product-sizes",
-    name: "Sizes",
-    icon: Ruler,
-  },
-  {
-    id: "product-categories",
-    name: "Categories",
-    icon: Tag,
-  },
-
-  {
-    id: "suppliers-list",
-    name: "Suppliers",
-    icon: Building2,
-  },
-  {
-    id: "supplier-types",
-    name: "Types",
-    icon: FileSpreadsheet,
-  },
-
-  {
-    id: "customers-list",
-    name: "Customers",
-    icon: UserCircle,
-  },
-  {
-    id: "customer-segments",
-    name: "Segments",
-    icon: Tag,
-  },
-  {
-    id: "contact-methods",
-    name: "Contact Methods",
-    icon: Phone,
-  },
-
-  {
-    id: "documents-list",
-    name: "Documents",
-    icon: BookOpen,
-  },
-  {
-    id: "document-types",
-    name: "Types",
-    icon: FileSpreadsheet,
-  },
-
-  {
-    id: "organizations-list",
-    name: "Organizations",
-    icon: Building,
-  },
-  {
-    id: "departments",
-    name: "Departments",
-    icon: Building2,
-  },
-];
-
 const HomePage = async (props: {
   params: Promise<{
     table?: string;
@@ -194,17 +109,17 @@ const HomePage = async (props: {
   }
 
   const headers = getTableHeaders(params?.table as string);
-  const moduleInfo = modules.find((m) => m.id === (params?.module as string));
-  const ModuleIcon = moduleInfo?.icon || moduleInfo?.icon || Database;
-  const title = moduleInfo?.name || moduleInfo?.name || "Catalog";
 
   const rows = dbData ? dbData : [];
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] bg-background">
       <main className="flex flex-col  overflow-auto px-4 md:px-6 h-full py-10 gap-10">
-        <PageHeader title={title} icon={<ModuleIcon className="h-5 w-5" />} />
-        <Toolbar title={title} name={params?.table as string} />
+        <PageHeader title={params?.table as string} />
+        <Toolbar
+          title={params?.table as string}
+          name={params?.table as string}
+        />
         <Table headers={headers} data={rows} name={params?.table as string} />
         <Pagination totalItems={rows.length} />
       </main>

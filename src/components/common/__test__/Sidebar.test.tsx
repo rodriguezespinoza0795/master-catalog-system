@@ -1,13 +1,13 @@
 import Sidebar from "../sidebar/Sidebar";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { SidebarProvider } from "@/components/ui/sidebar";
-
 const mockedRouter = {
   push: jest.fn(),
 };
 
 jest.mock("next/navigation", () => ({
   useRouter: () => mockedRouter,
+  usePathname: () => "/",
 }));
 
 describe("Sidebar", () => {

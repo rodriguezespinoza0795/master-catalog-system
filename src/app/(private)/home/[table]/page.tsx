@@ -1,8 +1,9 @@
 import { Table } from "@/components/common/Table";
 import PageHeader from "@/components/common/Table/PageHeader";
-import Pagination from "@/components/common/Table/Pagination";
 import Toolbar from "@/components/common/Table/Toolbar";
-import { fetchData } from "@/lib/data";
+import { fetchData, fetchDataPages } from "@/lib/data";
+import PaginationComponent from "@/components/common/Table/Pagination";
+import { getCatalogConfig } from "@/components/catalogs/catalog.utils";
 
 const getTableHeaders = (subcatalogId: string | null = null) => {
   // Headers for each module and subcatalog
@@ -70,47 +71,20 @@ const HomePage = async (props: {
     table?: string;
     module?: string;
   }>;
+  searchParams?: Promise<{
+    query?: string;
+    page?: string;
+  }>;
 }) => {
-  const dbTableName = {
-    "products-list": "products",
-    "product-sizes": "product_sizes",
-    "product-categories": "product_categories",
-    "suppliers-list": "suppliers",
-    "supplier-types": "supplier_types",
-    "customers-list": "customers",
-    "customer-segments": "customer_segments",
-    "contact-methods": "contact_methods",
-    "documents-list": "documents",
-    "document-types": "document_types",
-    "organizations-list": "organizations",
-    departments: "departments",
-  };
   const params = await props.params;
-  let dbData = null;
-  if (
-    [
-      "products-list",
-      "product-sizes",
-      "product-categories",
-      "suppliers-list",
-      "supplier-types",
-      "customers-list",
-      "customer-segments",
-      "contact-methods",
-      "documents-list",
-      "document-types",
-      "organizations-list",
-      "departments",
-    ].includes(params?.table as string)
-  ) {
-    dbData = await fetchData(
-      dbTableName[params?.table as keyof typeof dbTableName]
-    );
-  }
+  const searchParams = await props.searchParams;
+  const currentPage = Number(searchParams?.page) || 1;
+  const routeConfig = await getCatalogConfig(params?.table as string);
+  const totalPages = await fetchDataPages(routeConfig.dbTableName);
 
   const headers = getTableHeaders(params?.table as string);
 
-  const rows = dbData ? dbData : [];
+  const dbData = await fetchData(routeConfig.dbTableName, currentPage);
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] bg-background">
@@ -120,8 +94,11 @@ const HomePage = async (props: {
           title={params?.table as string}
           name={params?.table as string}
         />
-        <Table headers={headers} data={rows} name={params?.table as string} />
-        <Pagination totalItems={rows.length} />
+        <Table headers={headers} data={dbData} name={params?.table as string} />
+        <PaginationComponent
+          totalPages={totalPages.totalPages}
+          totalItems={totalPages.totalItems}
+        />
       </main>
     </div>
   );

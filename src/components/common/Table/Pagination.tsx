@@ -1,32 +1,111 @@
-import { Button } from "@/components/ui/button";
+"use client";
 
-const Pagination = ({ totalItems }: { totalItems: number }) => {
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { usePathname, useSearchParams } from "next/navigation";
+
+export const generatePagination = (currentPage: number, totalPages: number) => {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+  if (currentPage <= 3) {
+    return [1, 2, 3, "...", totalPages - 1, totalPages];
+  }
+
+  if (currentPage >= totalPages - 2) {
+    return [1, 2, "...", totalPages - 2, totalPages - 1, totalPages];
+  }
+
+  return [
+    1,
+    "...",
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    "...",
+    totalPages,
+  ];
+};
+
+function PaginationNumber({
+  page,
+  href,
+  isActive,
+}: {
+  page: number | string;
+  href: string;
+  isActive: boolean;
+}) {
+  return page === "..." ? (
+    <PaginationItem>
+      <PaginationEllipsis />
+    </PaginationItem>
+  ) : (
+    <PaginationItem>
+      <PaginationLink href={href} isActive={isActive}>
+        {page}
+      </PaginationLink>
+    </PaginationItem>
+  );
+}
+
+const PaginationComponent = ({
+  totalPages,
+  totalItems,
+}: {
+  totalPages: number;
+  totalItems: number;
+}) => {
+  const ITEMS_PER_PAGE = 5;
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
+
+  const createPageURL = (pageNumber: number | string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", pageNumber.toString());
+    return `${pathname}?${params.toString()}`;
+  };
+
+  const allPages = generatePagination(currentPage, totalPages);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE - 1, totalItems);
+
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <Pagination className="flex flex-col sm:flex-row justify-between gap-4 items-center">
       <div className="text-sm text-muted-foreground">
-        Showing <strong>1</strong> to <strong>{totalItems}</strong> of{" "}
+        Showing <strong>{startIndex}</strong> to <strong>{endIndex}</strong> of{" "}
         <strong>{totalItems}</strong> entries
       </div>
-      <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" disabled>
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          className="bg-primary text-primary-foreground"
-        >
-          1
-        </Button>
-        <Button variant="outline" size="sm">
-          2
-        </Button>
-        <Button variant="outline" size="sm">
-          Next
-        </Button>
-      </div>
-    </div>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious href={createPageURL(currentPage - 1)} />
+        </PaginationItem>
+        <div className="flex -space-x-px">
+          {allPages.map((page, index) => {
+            return (
+              <PaginationNumber
+                key={`${page}-${index}`}
+                href={createPageURL(page)}
+                page={page}
+                isActive={currentPage === page}
+              />
+            );
+          })}
+        </div>
+        <PaginationItem>
+          <PaginationNext href={createPageURL(currentPage + 1)} />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
   );
 };
 
-export default Pagination;
+export default PaginationComponent;

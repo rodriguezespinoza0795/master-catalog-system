@@ -4,6 +4,7 @@ export interface CatalogConfig {
     name: string;
     label: string;
     type: string;
+    maxLength?: number;
   }[];
   dbTableName: string;
   route: string;
@@ -26,7 +27,7 @@ export const getCatalogConfig = (table: string): CatalogConfig => {
       title: "Product Size",
       create: [
         { name: "name", label: "Name", type: "text" },
-        { name: "code", label: "Code", type: "text" },
+        { name: "code", label: "Code", type: "text", maxLength: 5 },
         { name: "description", label: "Description", type: "text" },
       ],
       dbTableName: "product_sizes",

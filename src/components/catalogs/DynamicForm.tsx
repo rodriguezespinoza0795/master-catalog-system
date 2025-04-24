@@ -70,6 +70,12 @@ const DynamicForm = ({
                             value: true,
                             message: `${field.label} is required`,
                           },
+                          ...(field.maxLength && {
+                            maxLength: {
+                              value: field.maxLength,
+                              message: `${field.label} is too long`,
+                            },
+                          }),
                           pattern: {
                             value: pattern[field.type as keyof typeof pattern],
                             message: `${field.label} is invalid`,

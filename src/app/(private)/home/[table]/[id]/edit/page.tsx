@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { fetchDataById } from "@/lib/data";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+
 const EditPage = async ({
   params,
 }: {
@@ -26,7 +27,7 @@ const EditPage = async ({
           Update {routeConfig.title}
         </h1>
       </div>
-      <DynamicForm config={routeConfig} defaultData={data[0]} />
+      <DynamicForm config={routeConfig} defaultData={data} />
     </div>
   );
 };

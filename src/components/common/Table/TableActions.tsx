@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { deleteRecord } from "@/lib/actions";
 import { getCatalogConfig } from "@/components/catalogs/catalog.utils";
+
 const TableActions = ({ name, item }: { name: string; item: any }) => {
   const router = useRouter();
   const config = getCatalogConfig(name);

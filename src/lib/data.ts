@@ -1,28 +1,29 @@
-import postgres from "postgres";
+import { prisma } from "@/lib/prisma";
+import { serializePrismaData } from "@/utils/serializeDecimal";
 
-const sql = postgres(process.env.DATABASE_URL!);
 const ITEMS_PER_PAGE = 5;
 
-export async function fetchData(tableName: string, page: number) {
+export async function fetchData(
+  tableName: string,
+  page: number
+): Promise<{ data: any[]; total: number; totalPages: number }> {
+  const model = prisma[tableName as keyof typeof prisma] as any;
   try {
-    const query = `SELECT * FROM ${tableName} LIMIT ${ITEMS_PER_PAGE} OFFSET ${
-      (page - 1) * ITEMS_PER_PAGE
-    }`;
-    const data = await sql.unsafe(query);
+    const [data, total] = await Promise.all([
+      model.findMany({
+        skip: (page - 1) * ITEMS_PER_PAGE,
+        take: ITEMS_PER_PAGE,
+      }),
+      model.count(),
+    ]);
 
-    return data;
-  } catch (error) {
-    throw new Error("Failed to fetch data.");
-  }
-}
+    const totalPages = Math.ceil(Number(total) / ITEMS_PER_PAGE);
 
-export async function fetchDataPages(tableName: string) {
-  try {
-    const query = `SELECT COUNT(*) as total FROM ${tableName}`;
-    const data = await sql.unsafe(query);
-
-    const totalPages = Math.ceil(Number(data[0].total) / ITEMS_PER_PAGE);
-    return { totalPages, totalItems: data[0].total };
+    return {
+      data: serializePrismaData(data),
+      total,
+      totalPages,
+    };
   } catch (error) {
     throw new Error("Failed to fetch data.");
   }
@@ -30,10 +31,12 @@ export async function fetchDataPages(tableName: string) {
 
 export async function fetchDataById(tableName: string, id: string) {
   try {
-    const query = `SELECT * FROM ${tableName} WHERE id = ${id}`;
-    const data = await sql.unsafe(query);
+    const model = prisma[tableName as keyof typeof prisma] as any;
+    const data = await model.findUnique({
+      where: { id },
+    });
 
-    return data;
+    return serializePrismaData([data])[0];
   } catch (error) {
     throw new Error("Failed to fetch data.");
   }

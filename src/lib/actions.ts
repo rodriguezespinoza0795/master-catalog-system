@@ -3,33 +3,34 @@
 import { CatalogConfig } from "@/components/catalogs/catalog.utils";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import postgres from "postgres";
-
-const sql = postgres(process.env.DATABASE_URL!);
+import { prisma } from "./prisma";
 
 export async function createNewRecord(
   data: Record<string, string>,
   config: CatalogConfig
 ) {
-  // Insert data into the database
-  const fields = config.create.map((field) => field.name).join(", ");
-  const values = config.create
-    .map((field) => {
-      if (field.type === "text") {
-        return `'${data[field.name]}'`;
-      }
-      return data[field.name];
-    })
-    .join(", ");
-
+  const model = prisma[config.dbTableName as keyof typeof prisma] as any;
   try {
-    const query = `
-      INSERT INTO ${config.dbTableName} (${fields}, status)
-      VALUES (${values}, 'Active')
-    `;
-    await sql.unsafe(query);
+    const parsedData = config.create
+      .map((field) => {
+        if (["decimal", "number"].includes(field.type)) {
+          return { [field.name]: parseFloat(data[field.name]) };
+        }
+        return { [field.name]: data[field.name] };
+      })
+      .reduce<Record<string, string | number>>(
+        (acc, curr) => ({ ...acc, ...curr }),
+        {}
+      );
+
+    await model.create({
+      data: {
+        ...parsedData,
+        status: "Active",
+      },
+    });
   } catch (error) {
-    // If a database error occurs, return a more specific error.
+    console.error(error);
     return {
       message: `Database Error: Failed to Create ${config.title}.`,
     };
@@ -45,24 +46,26 @@ export async function updateRecord(
   data: Record<string, string>,
   config: CatalogConfig
 ) {
-  const values = Object.entries(data)
-    .map(([key, value]) => {
-      const type = config.create.find((field) => field.name === key)?.type;
-      if (type === "text") {
-        return `${key} = '${value}'`;
-      }
-      return `${key} = ${value}`;
-    })
-    .join(", ");
-
   try {
-    const query = `
-    UPDATE ${config.dbTableName}
-    SET ${values}
-    WHERE id = ${id}
-  `;
-    await sql.unsafe(query);
+    const model = prisma[config.dbTableName as keyof typeof prisma] as any;
+    const parsedData = config.create
+      .map((field) => {
+        if (["decimal", "number"].includes(field.type)) {
+          return { [field.name]: parseFloat(data[field.name]) };
+        }
+        return { [field.name]: data[field.name] };
+      })
+      .reduce<Record<string, string | number>>(
+        (acc, curr) => ({ ...acc, ...curr }),
+        {}
+      );
+
+    await model.update({
+      where: { id },
+      data: { ...parsedData },
+    });
   } catch (error) {
+    console.error(error);
     return { message: "Database Error: Failed to update record." };
   }
 
@@ -72,12 +75,11 @@ export async function updateRecord(
 
 export async function deleteRecord(id: string, config: CatalogConfig) {
   try {
-    const query = `
-    UPDATE ${config.dbTableName}
-    SET status = 'Inactive'
-    WHERE id = ${id}
-  `;
-    await sql.unsafe(query);
+    const model = prisma[config.dbTableName as keyof typeof prisma] as any;
+    await model.update({
+      where: { id },
+      data: { status: "Inactive" },
+    });
     revalidatePath(`/home/${config.route}`);
   } catch (error) {
     return { message: "Database Error: Failed to delete record." };

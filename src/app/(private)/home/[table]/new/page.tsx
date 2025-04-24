@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import DynamicForm from "@/components/catalogs/DynamicForm";
 import { getCatalogConfig } from "@/components/catalogs/catalog.utils";
 

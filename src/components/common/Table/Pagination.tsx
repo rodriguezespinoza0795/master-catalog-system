@@ -75,7 +75,8 @@ const PaginationComponent = ({
   };
 
   const allPages = generatePagination(currentPage, totalPages);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const startIndex =
+    allPages.length > 0 ? (currentPage - 1) * ITEMS_PER_PAGE + 1 : 0;
   const endIndex = Math.min(startIndex + ITEMS_PER_PAGE - 1, totalItems);
 
   return (

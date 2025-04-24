@@ -1,7 +1,7 @@
 import { Table } from "@/components/common/Table";
 import PageHeader from "@/components/common/Table/PageHeader";
 import Toolbar from "@/components/common/Table/Toolbar";
-import { fetchData, fetchDataPages } from "@/lib/data";
+import { fetchData } from "@/lib/data";
 import PaginationComponent from "@/components/common/Table/Pagination";
 import { getCatalogConfig } from "@/components/catalogs/catalog.utils";
 
@@ -80,11 +80,14 @@ const HomePage = async (props: {
   const searchParams = await props.searchParams;
   const currentPage = Number(searchParams?.page) || 1;
   const routeConfig = await getCatalogConfig(params?.table as string);
-  const totalPages = await fetchDataPages(routeConfig.dbTableName);
 
   const headers = getTableHeaders(params?.table as string);
 
-  const dbData = await fetchData(routeConfig.dbTableName, currentPage);
+  const {
+    data: dbData,
+    total,
+    totalPages,
+  } = await fetchData(routeConfig.dbTableName, currentPage);
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] bg-background">
@@ -95,10 +98,7 @@ const HomePage = async (props: {
           name={params?.table as string}
         />
         <Table headers={headers} data={dbData} name={params?.table as string} />
-        <PaginationComponent
-          totalPages={totalPages.totalPages}
-          totalItems={totalPages.totalItems}
-        />
+        <PaginationComponent totalPages={totalPages} totalItems={total} />
       </main>
     </div>
   );
